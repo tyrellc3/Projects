@@ -3,3 +3,4 @@ duckdb
 pandas
 jupyter
 plotly
+kaleido

@@ -56,6 +56,16 @@ python scripts/export_dashboard.py
 
 Then open `reports/openflights_dashboard.html`.
 
+## Notebook chart rendering
+
+GitHub does not reliably render interactive Plotly charts inside notebooks. The notebooks keep the interactive Plotly charts for local use and include static SVG fallback versions exported from Plotly with Kaleido:
+
+```bash
+python scripts/export_github_charts.py
+```
+
+The static notebook charts are saved in `assets/openflights/`.
+
 ## Documentation
 
 ```bash
