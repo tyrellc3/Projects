@@ -42,6 +42,10 @@ dbt docs generate
 - `mart_airport_connectivity`: airport departures and arrivals
 - `mart_top_hub_airports`: busiest airports by route activity
 - `mart_top_country_pairs`: country-to-country route flows
+- `mart_route_network_summary`: domestic versus international route mix
+- `mart_country_route_mix`: country-level outbound route mix
+- `mart_hub_country_dependency`: hub concentration by country
+- `mart_airline_route_coverage`: airline route coverage with carrier names
 
 ## Analytics
 

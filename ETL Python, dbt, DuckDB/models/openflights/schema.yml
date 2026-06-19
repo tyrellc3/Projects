@@ -40,3 +40,37 @@ models:
     description: "Aggregated route departures and arrivals by airport."
   - name: mart_top_hub_airports
     description: "Highest-traffic airports by combined departure and arrival counts."
+  - name: mart_top_country_pairs
+    description: "Highest-volume source and destination country route pairs."
+  - name: mart_route_network_summary
+    description: "Network-level domestic and international route mix."
+    columns:
+      - name: matched_routes
+        tests: [not_null]
+      - name: domestic_routes
+        tests: [not_null]
+      - name: international_routes
+        tests: [not_null]
+  - name: mart_country_route_mix
+    description: "Outbound route mix by country, split into domestic and international routes."
+    columns:
+      - name: country
+        tests: [not_null]
+      - name: outbound_routes
+        tests: [not_null]
+  - name: mart_hub_country_dependency
+    description: "How much each country's route connectivity depends on its largest hub airports."
+    columns:
+      - name: country
+        tests: [not_null]
+      - name: airport_name
+        tests: [not_null]
+      - name: pct_country_connectivity
+        tests: [not_null]
+  - name: mart_airline_route_coverage
+    description: "Airline route coverage with carrier names, countries, served airports, and unique route pairs."
+    columns:
+      - name: airline_code
+        tests: [not_null]
+      - name: route_count
+        tests: [not_null]
