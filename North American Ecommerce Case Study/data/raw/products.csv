@@ -1,0 +1,63 @@
+product_id,product_sku,product_category,product_name,list_price,is_active
+PRD-055,PRD-AC-055,Accessories,Trail Accessory 055,59.99,true
+PRD-077,PRD-AC-077,Accessories,Trail Accessory 077,79.99,true
+PRD-099,PRD-AC-099,Accessories,Trail Accessory 099,49.99,true
+PRD-102,PRD-AC-102,Accessories,Trail Accessory 102,79.99,true
+PRD-196,PRD-AC-196,Accessories,Trail Accessory 196,29.99,true
+PRD-345,PRD-AC-345,Accessories,Trail Accessory 345,19.99,true
+PRD-354,PRD-AC-354,Accessories,Trail Accessory 354,49.99,true
+PRD-355,PRD-AC-355,Accessories,Trail Accessory 355,29.99,true
+PRD-533,PRD-AC-533,Accessories,Trail Accessory 533,49.99,true
+PRD-605,PRD-AC-605,Accessories,Trail Accessory 605,29.99,true
+PRD-651,PRD-AC-651,Accessories,Trail Accessory 651,59.99,true
+PRD-734,PRD-AC-734,Accessories,Trail Accessory 734,29.99,true
+PRD-777,PRD-AC-777,Accessories,Trail Accessory 777,89.99,true
+PRD-949,PRD-AC-949,Accessories,Trail Accessory 949,59.99,true
+PRD-100,PRD-AP-100,Apparel,Performance Layer 100,149.99,true
+PRD-109,PRD-AP-109,Apparel,Performance Layer 109,129.99,true
+PRD-162,PRD-AP-162,Apparel,Performance Layer 162,169.99,true
+PRD-195,PRD-AP-195,Apparel,Performance Layer 195,89.99,true
+PRD-228,PRD-AP-228,Apparel,Performance Layer 228,124.99,true
+PRD-244,PRD-AP-244,Apparel,Performance Layer 244,159.99,true
+PRD-311,PRD-AP-311,Apparel,Performance Layer 311,149.99,true
+PRD-334,PRD-AP-334,Apparel,Performance Layer 334,69.99,true
+PRD-376,PRD-AP-376,Apparel,Performance Layer 376,159.99,true
+PRD-548,PRD-AP-548,Apparel,Performance Layer 548,139.99,true
+PRD-803,PRD-AP-803,Apparel,Performance Layer 803,159.99,true
+PRD-820,PRD-AP-820,Apparel,Performance Layer 820,99.99,true
+PRD-891,PRD-AP-891,Apparel,Performance Layer 891,99.99,true
+PRD-924,PRD-AP-924,Apparel,Performance Layer 924,109.99,true
+PRD-954,PRD-AP-954,Apparel,Performance Layer 954,109.99,true
+PRD-961,PRD-AP-961,Apparel,Performance Layer 961,159.99,true
+PRD-103,PRD-EQ-103,Equipment,Outdoor Equipment 103,349.99,true
+PRD-194,PRD-EQ-194,Equipment,Outdoor Equipment 194,429.99,true
+PRD-302,PRD-EQ-302,Equipment,Outdoor Equipment 302,549.99,true
+PRD-317,PRD-EQ-317,Equipment,Outdoor Equipment 317,499.99,true
+PRD-319,PRD-EQ-319,Equipment,Outdoor Equipment 319,529.99,true
+PRD-344,PRD-EQ-344,Equipment,Outdoor Equipment 344,349.99,true
+PRD-388,PRD-EQ-388,Equipment,Outdoor Equipment 388,449.99,true
+PRD-445,PRD-EQ-445,Equipment,Outdoor Equipment 445,329.99,true
+PRD-491,PRD-EQ-491,Equipment,Outdoor Equipment 491,899.99,true
+PRD-512,PRD-EQ-512,Equipment,Outdoor Equipment 512,399.99,true
+PRD-649,PRD-EQ-649,Equipment,Outdoor Equipment 649,259.99,true
+PRD-763,PRD-EQ-763,Equipment,Outdoor Equipment 763,229.99,true
+PRD-789,PRD-EQ-789,Equipment,Outdoor Equipment 789,249.99,true
+PRD-798,PRD-EQ-798,Equipment,Outdoor Equipment 798,529.99,true
+PRD-814,PRD-EQ-814,Equipment,Outdoor Equipment 814,459.99,true
+PRD-000,PRD-FO-000,Footwear,Trail Running Shoe 000,199.99,true
+PRD-177,PRD-FO-177,Footwear,Trail Running Shoe 177,229.99,true
+PRD-188,PRD-FO-188,Footwear,Trail Running Shoe 188,189.99,true
+PRD-201,PRD-FO-201,Footwear,Trail Running Shoe 201,219.99,true
+PRD-209,PRD-FO-209,Footwear,Trail Running Shoe 209,209.99,true
+PRD-220,PRD-FO-220,Footwear,Trail Running Shoe 220,249.99,true
+PRD-261,PRD-FO-261,Footwear,Trail Running Shoe 261,99.99,true
+PRD-270,PRD-FO-270,Footwear,Trail Running Shoe 270,159.99,true
+PRD-338,PRD-FO-338,Footwear,Trail Running Shoe 338,179.99,true
+PRD-457,PRD-FO-457,Footwear,Trail Running Shoe 457,239.99,true
+PRD-490,PRD-FO-490,Footwear,Trail Running Shoe 490,189.99,true
+PRD-529,PRD-FO-529,Footwear,Trail Running Shoe 529,129.99,true
+PRD-702,PRD-FO-702,Footwear,Trail Running Shoe 702,179.99,true
+PRD-791,PRD-FO-791,Footwear,Trail Running Shoe 791,229.99,true
+PRD-854,PRD-FO-854,Footwear,Trail Running Shoe 854,109.99,true
+PRD-884,PRD-FO-884,Footwear,Trail Running Shoe 884,119.99,true
+PRD-982,PRD-FO-982,Footwear,Trail Running Shoe 982,149.99,true

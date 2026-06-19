@@ -1,0 +1,168 @@
+version: 2
+
+sources:
+  - name: ecommerce
+    schema: raw
+    tables:
+      - name: orders
+      - name: order_lines
+      - name: payments
+      - name: returns
+      - name: customers
+      - name: products
+      - name: channels
+      - name: campaigns
+      - name: date_spine
+
+models:
+  - name: stg_orders
+    description: "Raw ecommerce order extract with normalized types and data issue classification."
+    columns:
+      - name: order_id
+        tests: [not_null]
+      - name: inserted_at
+        tests: [not_null]
+      - name: order_date
+        tests: [not_null]
+
+  - name: stg_order_lines
+    description: "Raw order-line source derived from order-level source records."
+    columns:
+      - name: line_id
+        tests: [not_null, unique]
+      - name: order_id
+        tests: [not_null]
+
+  - name: stg_payments
+    description: "Raw payment source with payment timing and method."
+    columns:
+      - name: payment_id
+        tests: [not_null, unique]
+      - name: order_id
+        tests: [not_null]
+
+  - name: stg_returns
+    description: "Raw return source retaining sign and flag issues for correction downstream."
+    columns:
+      - name: return_id
+        tests: [not_null, unique]
+      - name: order_id
+        tests: [not_null]
+
+  - name: dim_customers
+    description: "Customer dimension with redacted geography and acquisition source."
+    columns:
+      - name: customer_key
+        tests: [not_null, unique]
+
+  - name: dim_products
+    description: "Product dimension with redacted product identifiers and categories."
+    columns:
+      - name: product_key
+        tests: [not_null, unique]
+      - name: product_sku
+        tests: [not_null, unique]
+
+  - name: dim_channels
+    description: "Channel dimension for owned, partner, and unknown channels."
+    columns:
+      - name: channel_key
+        tests: [not_null, unique]
+
+  - name: dim_campaigns
+    description: "Campaign dimension for promo-attributed marketing sources."
+    columns:
+      - name: campaign_key
+        tests: [not_null, unique]
+
+  - name: dim_dates
+    description: "Date dimension covering order, payment, and return dates."
+    columns:
+      - name: date_key
+        tests: [not_null, unique]
+
+  - name: fct_orders
+    description: "Governed order fact, one row per order after dedupe and pipeline exclusions."
+    columns:
+      - name: order_sk
+        tests: [not_null, unique]
+      - name: order_id
+        tests: [not_null, unique]
+      - name: gross_revenue
+        tests: [not_null]
+      - name: return_amount
+        tests: [not_null]
+      - name: net_revenue
+        tests: [not_null]
+      - name: customer_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_key
+      - name: product_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: product_key
+      - name: channel_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_channels')
+                field: channel_key
+
+  - name: fct_order_lines
+    description: "Governed order-line fact tied to the governed order grain."
+    columns:
+      - name: line_id
+        tests: [not_null, unique]
+      - name: order_sk
+        tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_sk
+
+  - name: fct_payments
+    description: "Governed payment fact tied to the governed order grain."
+    columns:
+      - name: payment_id
+        tests: [not_null, unique]
+      - name: order_sk
+        tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_sk
+
+  - name: fct_returns
+    description: "Governed return fact with standardized return deductions."
+    columns:
+      - name: return_id
+        tests: [not_null, unique]
+      - name: order_sk
+        tests:
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_sk
+
+  - name: mart_revenue_kpis
+    description: "Executive KPI summary for raw-to-governed revenue."
+
+  - name: mart_revenue_reconciliation
+    description: "Bridge from raw extracted revenue to governed net revenue."
+
+  - name: mart_finance_monthly_revenue
+    description: "Finance view of recognized net revenue by payment month."
+
+  - name: mart_marketing_attribution
+    description: "Marketing view of promo-attributed and non-promo net revenue."
+
+  - name: mart_ecommerce_channel_performance
+    description: "Ecommerce view by channel and product category."
+
+  - name: mart_data_quality_issues
+    description: "Data quality issue summary by issue type."

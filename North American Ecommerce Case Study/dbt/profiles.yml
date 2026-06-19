@@ -1,0 +1,8 @@
+ecommerce_revenue_case_study:
+  outputs:
+    dev:
+      type: duckdb
+      path: "data/ecommerce.duckdb"
+      threads: 1
+      extensions: []
+  target: dev

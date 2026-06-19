@@ -1,0 +1,9 @@
+Step,Orders,Revenue,Adjustment,Running Total,Root Cause Layer
+Raw extracted orders (OMS),66,13144.35,,13144.35,-
+Less: Duplicate rows removed,-3,,-729.97,12414.38,Source & Capture
+Less: Return amount sign errors corrected,0,,-1259.95,11154.43,Semantic & Policy
+Less: Cancelled order revenue zeroed,-4,,-809.96,10344.47,Semantic & Policy
+Less: Pipeline unknowns excluded (pending review),-3,,-259.98,10084.49,Pipeline & Consumption
+Governed Net Revenue (fct_orders),,,10084.49,10549.48,PASS Single source of truth
+"Total Revenue Gap: $2,594.87  (19.7% of raw gross)",,,"This gap represents revenue inflation that would cause Finance, Marketing & eComm to report different numbers from the same source data.",,
+"Note: Timing mismatches (4 orders, TIM1-TIM4) do not change total revenue but shift it between periods. Finance uses payment_date; eComm uses order_date. dbt resolves this by exposing both date fields and documenting which field each team should use.",,,,,

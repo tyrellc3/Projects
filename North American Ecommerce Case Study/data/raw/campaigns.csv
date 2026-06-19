@@ -1,0 +1,10 @@
+campaign_id,marketing_source,campaign_name,campaign_type,is_promo_attributed
+CAM-202601-AFFILIATE,affiliate,Affiliate 2026-01,Paid,true
+CAM-202601-EMAIL,email,Email 2026-01,Owned,true
+CAM-202601-PAID-SEARCH,paid_search,Paid Search 2026-01,Paid,true
+CAM-202602-EMAIL,email,Email 2026-02,Owned,true
+CAM-202602-PAID-SEARCH,paid_search,Paid Search 2026-02,Paid,true
+CAM-202603-AFFILIATE,affiliate,Affiliate 2026-03,Paid,true
+CAM-202603-EMAIL,email,Email 2026-03,Owned,true
+CAM-202604-EMAIL,email,Email 2026-04,Owned,true
+CAM-202604-PAID-SEARCH,paid_search,Paid Search 2026-04,Paid,true

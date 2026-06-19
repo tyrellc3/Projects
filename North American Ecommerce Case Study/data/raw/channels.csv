@@ -1,0 +1,8 @@
+channel_id,channel_name,channel_group,is_known_channel
+CHN-001,Direct Web,Owned,true
+CHN-002,B2B,Partner,true
+CHN-003,Retail,Partner,true
+CHN-004,Wholesale,Partner,true
+CHN-005,Amazon,Partner,true
+CHN-998,Missing Channel,Unknown,false
+CHN-999,UNKNOWN,Unknown,false

@@ -1,0 +1,5 @@
+return_id,order_id,return_date,return_amount,return_reason,return_status
+RET-00001,ORD-2026-RET1,2026-02-07,189.99,late_delivery,processed
+RET-00002,ORD-2026-RET2,2026-03-06,-124.99,buyer_remorse,processed
+RET-00003,ORD-2026-RET3,2026-04-04,0,size_fit,processed
+RET-00004,ORD-2026-RET4,2026-04-15,399.99,buyer_remorse,processed

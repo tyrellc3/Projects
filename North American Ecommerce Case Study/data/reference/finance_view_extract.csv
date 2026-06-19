@@ -1,0 +1,11 @@
+,Finance Team  -  Net Revenue Dashboard  -  Jan-Apr 2026,,,,,
+,Revenue recognized on payment_date  -  Returns deducted  -  Cancelled orders excluded  -  Source: fct_orders,,,,,
+,Net Revenue (Jan-Apr),,Avg Monthly Revenue,,Total Orders (Clean),
+,"$10,549.48",,"$2,637.37",,60,
+,MONTHLY REVENUE SUMMARY  (payment_date basis),,,,,
+,Month,Orders,Gross Revenue,Returns Deducted,Cancels Removed,Net Revenue
+,Jan 2026,14,2659.87,-189.99,-219.99,2469.88
+,Feb 2026,16,2874.85,-124.99,-89.99,2749.86
+,Mar 2026,17,2739.85,-79.99,-499.98,2659.86
+,Apr 2026,13,3069.87,-399.99,,2669.88
+,TOTAL,60,11344.44,-794.96,-809.96,10549.48

@@ -1,0 +1,23 @@
+,Marketing Team   -   Attributed Revenue Dashboard   -   Jan-Apr 2026,,,,,,
+,Promo-attributed = paid/owned campaigns drove the sale (email - paid_search - affiliate)   -   Non-promo = direct + organic   -   Source: fct_orders,,,,,,
+,Recognized Revenue YTD,,Promo-Attributed,,Direct + Organic,,Top Promo Source
+,"$10,549.48",,"$2,749.86",,"$7,799.62",,Email
+,Net on completed orders - Finance-aligned,,26.1% - 18 orders - email/paid/affiliate,,73.9% - 42 orders - brand demand,,"$1,479.90 - 11 orders"
+,REVENUE BY MARKETING SOURCE  -  PROMO vs NON-PROMO,,,,,,
+,Marketing Source,Promo?,Orders,Gross Revenue,Returns,Net Revenue,% of Net
+,Email,Promo,11,1479.90,0,1479.90,0.14
+,Affiliate,Promo,3,789.98,0,789.98,0.07
+,Paid Search,Promo,4,879.97,-399.99,479.98,0.05
+,Direct,Non-Promo,30,6784.70,-124.99,6659.71,0.63
+,Organic,Non-Promo,12,1409.89,-269.98,1139.91,0.11
+,Promo Total,-,18,3149.85,-399.99,2749.86,0.26
+,Non-Promo Total,-,42,8194.59,-394.97,7799.62,0.74
+,GRAND TOTAL,-,60,11344.44,-794.96,10549.48,1
+,REVENUE BY CHANNEL,,,,,,
+,Channel,Orders,Gross Revenue,Net Revenue,% of Net,,
+,B2B,14,2899.86,2899.86,0.27,,
+,Retail,12,2974.88,2849.89,0.27,,
+,Direct Web,16,2729.87,2139.89,0.20,,
+,Wholesale,7,1599.93,1599.93,0.15,,
+,Amazon,11,1139.90,1059.91,0.10,,
+,TOTAL,60,11344.44,10549.48,1,,

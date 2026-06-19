@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>North American Ecommerce Revenue Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  /* ── Power BI color tokens ── */
+  :root {
+    --pbi-bar:     #201F1E;
+    --pbi-canvas:  #F3F2F1;
+    --pbi-blue:    #118DFF;
+    --pbi-dblue:   #12239E;
+    --pbi-orange:  #E66C37;
+    --pbi-purple:  #6B007B;
+    --pbi-teal:    #0E7490;
+    --pbi-green:   #217346;
+    --pbi-red:     #C00000;
+    --pbi-gray:    #605E5C;
+    --pbi-lgray:   #C8C6C4;
+    --pbi-border:  #E1DFDD;
+    --pbi-white:   #FFFFFF;
+    --pbi-text:    #252423;
+    --pbi-subtext: #605E5C;
+    --pbi-tab-ht:  32px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+
+  body {
+    font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--pbi-canvas);
+    color: var(--pbi-text);
+    font-size: 12px;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Power BI top bar ── */
+  .pbi-topbar {
+    background: var(--pbi-bar); color: white;
+    height: 40px; display: flex; align-items: center;
+    padding: 0 16px; gap: 12px; flex-shrink: 0;
+    box-shadow: 0 1px 4px rgba(0,0,0,.4); z-index: 200;
+  }
+  .pbi-logo { display: flex; align-items: center; gap: 8px; }
+  .pbi-logo-icon {
+    width: 18px; height: 18px; background: #F2C811;
+    clip-path: polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%);
+  }
+  .pbi-logo-text { font-size: 13px; font-weight: 600; color: white; letter-spacing: .1px; }
+  .pbi-sep { width: 1px; height: 20px; background: #3B3A39; }
+  .pbi-report-name { font-size: 12px; color: #C8C6C4; }
+  .pbi-spacer { flex: 1; }
+  .pbi-tag {
+    background: #F2C811; color: #201F1E;
+    font-size: 9px; font-weight: 700;
+    padding: 2px 8px; border-radius: 2px; letter-spacing: .5px;
+  }
+  .pbi-owner { font-size: 10px; color: #A19F9D; }
+
+  /* ── Report canvas ── */
+  .pbi-canvas { flex: 1; overflow-y: auto; overflow-x: hidden; background: var(--pbi-canvas); }
+  .pbi-page { display: none; padding: 18px 22px 14px; }
+  .pbi-page.active { display: block; }
+
+  /* ── Page tab bar ── */
+  .pbi-tabbar {
+    background: var(--pbi-white);
+    border-top: 1px solid var(--pbi-border);
+    height: var(--pbi-tab-ht);
+    display: flex; align-items: flex-end;
+    padding: 0 8px; gap: 2px; flex-shrink: 0; z-index: 200;
+  }
+  .pbi-tab {
+    height: 26px; padding: 0 16px;
+    font-size: 11px; font-weight: 400; cursor: pointer;
+    border: 1px solid transparent; border-bottom: none;
+    border-radius: 3px 3px 0 0;
+    color: var(--pbi-subtext); background: #F3F2F1;
+    display: flex; align-items: center; gap: 6px; white-space: nowrap;
+    transition: background .1s;
+  }
+  .pbi-tab:hover  { background: #EDEBE9; color: var(--pbi-text); }
+  .pbi-tab.active {
+    background: var(--pbi-white); border-color: var(--pbi-border);
+    color: var(--pbi-text); font-weight: 600;
+  }
+  .tab-pip { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* ── Visual card ── */
+  .v-card {
+    background: var(--pbi-white);
+    border: 1px solid var(--pbi-border);
+    border-radius: 4px; overflow: hidden;
+    box-shadow: 0 1.5px 4px rgba(0,0,0,.05);
+    margin-bottom: 12px;
+  }
+  .v-header {
+    padding: 9px 14px 5px;
+    font-size: 11px; font-weight: 600;
+    color: var(--pbi-text);
+    border-bottom: 1px solid var(--pbi-border);
+    background: var(--pbi-white); letter-spacing: .1px;
+  }
+  .v-body { padding: 12px 14px; }
+
+  /* ── KPI cards (simplified) ── */
+  .kpi-row { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+  .kpi {
+    background: var(--pbi-white);
+    border: 1px solid var(--pbi-border);
+    border-radius: 4px;
+    padding: 14px 16px;
+    flex: 1; min-width: 160px;
+    box-shadow: 0 1.5px 4px rgba(0,0,0,.05);
+    border-top: 3px solid var(--pbi-blue);
+  }
+  .kpi .k-label {
+    font-size: 10px; font-weight: 600;
+    color: var(--pbi-subtext);
+    text-transform: uppercase; letter-spacing: .6px;
+    margin-bottom: 6px;
+  }
+  .kpi .k-value {
+    font-size: 26px; font-weight: 300;
+    color: var(--pbi-text); line-height: 1.1;
+  }
+  .kpi .k-sub { font-size: 10px; color: var(--pbi-subtext); margin-top: 4px; }
+
+  /* ── Grid layouts ── */
+  .g2  { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .g3  { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .g12 { display: grid; grid-template-columns: 1.6fr 1fr; gap: 10px; margin-bottom: 12px; }
+  .g21 { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+  /* ── Info callout (used sparingly) ── */
+  .callout {
+    border-left: 3px solid var(--pbi-blue);
+    background: #EFF6FF;
+    padding: 9px 14px;
+    border-radius: 0 4px 4px 0;
+    font-size: 11px;
+    color: #1E3A5F;
+    margin-bottom: 12px;
+    line-height: 1.5;
+  }
+  .callout.orange { border-color: var(--pbi-orange); background: #FFF4EC; color: #7A2E00; }
+  .callout.green  { border-color: var(--pbi-green);  background: #EFF8F2; color: #0C3D1E; }
+  .callout.purple { border-color: var(--pbi-purple); background: #F5F0FF; color: #3B0080; }
+
+  /* ── Data table ── */
+  .dt { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .dt th {
+    background: #F3F2F1; color: var(--pbi-text);
+    font-weight: 600; padding: 8px 12px;
+    text-align: left; font-size: 10.5px;
+    border-bottom: 2px solid var(--pbi-border);
+  }
+  .dt td { padding: 7px 12px; border-bottom: 1px solid #F3F2F1; }
+  .dt tr:hover td { background: #FAFAFA; }
+  .dt tfoot td { background: #F3F2F1; font-weight: 600; border-top: 2px solid var(--pbi-border); }
+
+  /* ── Tags ── */
+  .tag {
+    display: inline-block; padding: 1px 6px;
+    border-radius: 2px; font-size: 9.5px; font-weight: 600;
+  }
+  .t-ok     { background: #EFF8F2; color: #0C3D1E; }
+  .t-warn   { background: #FFF4EC; color: #7A2E00; }
+  .t-bad    { background: #FFF0F0; color: #6B0000; }
+  .t-blue   { background: #EFF6FF; color: #1E3A5F; }
+  .t-purple { background: #F5F0FF; color: #3B0080; }
+  .t-gray   { background: #F3F2F1; color: #3B3A39; }
+
+  .pos { color: var(--pbi-green); }
+  .neg { color: var(--pbi-red); }
+
+  /* ── Page title with audience badge ── */
+  .page-title {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--pbi-border);
+    padding-bottom: 10px;
+  }
+  .page-title h1 {
+    font-size: 16px; font-weight: 400;
+    color: var(--pbi-text); letter-spacing: .1px;
+  }
+  .audience-badge {
+    font-size: 9.5px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: .8px;
+    padding: 3px 9px; border-radius: 2px;
+    background: #F3F2F1; color: var(--pbi-subtext);
+    border: 1px solid var(--pbi-border);
+  }
+  .audience-badge .for { color: var(--pbi-lgray); margin-right: 4px; }
+  .audience-badge.exec    { background: #EFF6FF; color: #12239E; border-color: #BFDBFE; }
+  .audience-badge.fin     { background: #EFF6FF; color: #12239E; border-color: #BFDBFE; }
+  .audience-badge.mktg    { background: #FFF4EC; color: #7A2E00; border-color: #FED7AA; }
+  .audience-badge.ecomm   { background: #EFF8F2; color: #0C3D1E; border-color: #A7F3D0; }
+  .page-sub {
+    font-size: 11px; color: var(--pbi-subtext); margin-left: auto;
+  }
+
+  /* ── Footer note (replaces verbose intro callout) ── */
+  .footer-note {
+    margin-top: 8px; font-size: 10px; color: var(--pbi-subtext);
+    text-align: right; font-style: italic;
+  }
+
+  /* ── KPI accent variants per audience (border-top color) ── */
+  .kpi.k-blue   { border-top-color: var(--pbi-blue); }
+  .kpi.k-dblue  { border-top-color: var(--pbi-dblue); }
+  .kpi.k-orange { border-top-color: var(--pbi-orange); }
+  .kpi.k-green  { border-top-color: var(--pbi-green); }
+  .kpi.k-teal   { border-top-color: var(--pbi-teal); }
+  .kpi.k-purple { border-top-color: var(--pbi-purple); }
+  .kpi.k-red    { border-top-color: var(--pbi-red); }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════ POWER BI TOP BAR ══════════════════════════ -->
+<div class="pbi-topbar">
+  <div class="pbi-logo">
+    <div class="pbi-logo-icon"></div>
+    <div class="pbi-logo-text">Power BI</div>
+  </div>
+  <div class="pbi-sep"></div>
+  <div class="pbi-report-name">North American Ecommerce — Revenue Dashboard</div>
+  <div class="pbi-spacer"></div>
+  <div class="pbi-tag">SINGLE SOURCE OF TRUTH</div>
+  <div class="pbi-owner">Redacted portfolio version</div>
+</div>
+
+<!-- ══════════════════════════ SCROLLABLE CANVAS ══════════════════════════ -->
+<div class="pbi-canvas">
+
+  <!-- ────────────── PAGE: Executive Summary ────────────── -->
+  <div id="page-exec" class="pbi-page active">
+    <div class="page-title">
+      <h1>Executive Summary</h1>
+      <div class="audience-badge exec"><span class="for">For:</span>Leadership</div>
+      <div class="page-sub">Headline numbers · Jan–Apr 2026 · fct_orders (governed mart)</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi k-teal">
+        <div class="k-label">Gross Revenue YTD</div>
+        <div class="k-value" style="color:var(--pbi-teal);">$11,344</div>
+        <div class="k-sub">Post-cancel, pre-return · eCommerce demand</div>
+      </div>
+      <div class="kpi k-dblue">
+        <div class="k-label">Recognized Net Revenue</div>
+        <div class="k-value" style="color:var(--pbi-dblue);">$10,549</div>
+        <div class="k-sub">Post-return, on payment_date · Finance metric</div>
+      </div>
+      <div class="kpi k-orange">
+        <div class="k-label">Promo-Attributed Revenue</div>
+        <div class="k-value" style="color:var(--pbi-orange);">$2,750</div>
+        <div class="k-sub">26% of recognized · paid/owned campaigns only</div>
+      </div>
+      <div class="kpi k-purple">
+        <div class="k-label">Cross-Team Alignment</div>
+        <div class="k-value" style="color:var(--pbi-purple);">100%</div>
+        <div class="k-sub">Every dollar reconciled · zero manual spreadsheets</div>
+      </div>
+    </div>
+
+    <div class="g12">
+      <div class="v-card">
+        <div class="v-header">Net Revenue Trend (Jan–Apr 2026)</div>
+        <div class="v-body"><canvas id="execMonthly" height="200"></canvas></div>
+      </div>
+      <div class="v-card">
+        <div class="v-header">Net Revenue by Channel</div>
+        <div class="v-body"><canvas id="execChannel" height="200"></canvas></div>
+      </div>
+    </div>
+
+    <div class="v-card">
+      <div class="v-header">Cross-Team Reconciliation by Month</div>
+      <div class="v-body" style="overflow-x:auto;padding:0;">
+        <table class="dt" id="crossTeamTable"></table>
+      </div>
+    </div>
+
+    <div class="callout green" style="margin-bottom:0;">
+      <strong>North Star:</strong> 95%+ of reporting periods closed with all teams aligned, no manual reconciliation. Today: ~0%.
+    </div>
+
+    <div class="footer-note">
+      Each team reports a different metric by design. Demand (pre-cancel) &gt; Gross (post-cancel) &gt; Net (post-return). All trace to one mart.
+    </div>
+  </div>
+
+  <!-- ────────────── PAGE: Finance ────────────── -->
+  <div id="page-finance" class="pbi-page">
+    <div class="page-title">
+      <h1>Finance View</h1>
+      <div class="audience-badge fin"><span class="for">For:</span>Finance</div>
+      <div class="page-sub">Net Revenue on payment_date · Returns at refund date · Cancels excluded</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi k-teal">
+        <div class="k-label">Gross Revenue YTD</div>
+        <div class="k-value" style="color:var(--pbi-teal);">$11,344</div>
+        <div class="k-sub">Post-cancel, pre-return · 60 orders</div>
+      </div>
+      <div class="kpi k-dblue">
+        <div class="k-label">Recognized Net Revenue</div>
+        <div class="k-value" style="color:var(--pbi-dblue);">$10,549</div>
+        <div class="k-sub">On payment_date · governing metric</div>
+      </div>
+      <div class="kpi k-orange">
+        <div class="k-label">Returns Deducted</div>
+        <div class="k-value" style="color:var(--pbi-orange);">$795</div>
+        <div class="k-sub">Applied at refund date · period not restated</div>
+      </div>
+      <div class="kpi k-purple">
+        <div class="k-label">Q1/Q2 Boundary Risk</div>
+        <div class="k-value" style="color:var(--pbi-purple);">$900</div>
+        <div class="k-sub">1 order: Mar 31 ordered / Apr 2 paid</div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="v-card">
+        <div class="v-header">Net Revenue by Month (payment_date)</div>
+        <div class="v-body"><canvas id="finMonthly" height="220"></canvas></div>
+      </div>
+      <div class="v-card">
+        <div class="v-header">Net Revenue by Product Category</div>
+        <div class="v-body"><canvas id="finCategory" height="220"></canvas></div>
+      </div>
+    </div>
+
+    <div class="v-card">
+      <div class="v-header">Period-Boundary Orders — Order Date vs. Payment Date</div>
+      <div class="v-body" style="padding:0;">
+        <table class="dt" id="timingTable" style="margin-bottom:0;"></table>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Both order_date and payment_date are exposed in fct_orders. Finance convention: payment_date for revenue recognition.
+    </div>
+  </div>
+
+  <!-- ────────────── PAGE: Marketing ────────────── -->
+  <div id="page-marketing" class="pbi-page">
+    <div class="page-title">
+      <h1>Marketing View</h1>
+      <div class="audience-badge mktg"><span class="for">For:</span>Marketing</div>
+      <div class="page-sub">Attribution on COMPLETE orders · Net Revenue · Cancels removed</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi k-dblue">
+        <div class="k-label">Recognized Revenue</div>
+        <div class="k-value" style="color:var(--pbi-dblue);">$10,549</div>
+        <div class="k-sub">Universe Marketing operates in · Net on completed orders</div>
+      </div>
+      <div class="kpi k-purple">
+        <div class="k-label">Promo-Attributed</div>
+        <div class="k-value" style="color:var(--pbi-purple);">$2,750</div>
+        <div class="k-sub">26% · 18 orders · email, paid_search, affiliate</div>
+      </div>
+      <div class="kpi k-teal">
+        <div class="k-label">Direct + Organic</div>
+        <div class="k-value" style="color:var(--pbi-teal);">$7,800</div>
+        <div class="k-sub">74% · 42 orders · brand demand, no campaign</div>
+      </div>
+      <div class="kpi k-orange">
+        <div class="k-label">Top Promo Source</div>
+        <div class="k-value" style="font-size:20px;color:var(--pbi-orange);">Email</div>
+        <div class="k-sub">$1,480 · 11 orders · 54% of promo</div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="v-card">
+        <div class="v-header">Promo-Attributed vs. Direct/Organic — Net Revenue</div>
+        <div class="v-body"><canvas id="mktgPromoSplit" height="220"></canvas></div>
+      </div>
+      <div class="v-card">
+        <div class="v-header">Net Revenue by Marketing Source (Promo highlighted)</div>
+        <div class="v-body"><canvas id="mktgSource" height="220"></canvas></div>
+      </div>
+    </div>
+
+    <div class="v-card">
+      <div class="v-header">Marketing Source Breakdown — Promo vs Non-Promo</div>
+      <div class="v-body" style="padding:0;">
+        <table class="dt" id="mktgSourceTable"></table>
+      </div>
+    </div>
+
+    <div class="v-card">
+      <div class="v-header">Cancelled Orders Removed from Attribution</div>
+      <div class="v-body" style="padding:0;">
+        <table class="dt" id="cancelAttrTable"></table>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Promo-attributed = paid/owned campaigns drove the sale (email · paid_search · affiliate). Direct + Organic represent brand demand with no campaign touch.
+    </div>
+  </div>
+
+  <!-- ────────────── PAGE: eCommerce ────────────── -->
+  <div id="page-ecomm" class="pbi-page">
+    <div class="page-title">
+      <h1>eCommerce View</h1>
+      <div class="audience-badge ecomm"><span class="for">For:</span>eCommerce</div>
+      <div class="page-sub">Gross Demand on order_date · Post-cancel · Pre-return</div>
+    </div>
+
+    <div class="kpi-row">
+      <div class="kpi k-green">
+        <div class="k-label">Gross Revenue (Demand)</div>
+        <div class="k-value" style="color:var(--pbi-green);">$11,344</div>
+        <div class="k-sub">order_date · post-cancel · pre-return</div>
+      </div>
+      <div class="kpi k-dblue">
+        <div class="k-label">Recognized Net Revenue</div>
+        <div class="k-value" style="color:var(--pbi-dblue);">$10,549</div>
+        <div class="k-sub">For cross-team alignment with Finance</div>
+      </div>
+      <div class="kpi k-orange">
+        <div class="k-label">Return Rate</div>
+        <div class="k-value" style="color:var(--pbi-orange);">7.0%</div>
+        <div class="k-sub">$795 · 4 orders · one per month</div>
+      </div>
+      <div class="kpi k-teal">
+        <div class="k-label">Top Category</div>
+        <div class="k-value" style="font-size:20px;color:var(--pbi-teal);">Equipment</div>
+        <div class="k-sub">$6,070 demand · 53% of total</div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="v-card">
+        <div class="v-header">Gross Demand by Month (order_date)</div>
+        <div class="v-body"><canvas id="ecommMonthly" height="220"></canvas></div>
+      </div>
+      <div class="v-card">
+        <div class="v-header">Demand by Channel</div>
+        <div class="v-body"><canvas id="ecommChannel" height="220"></canvas></div>
+      </div>
+    </div>
+
+    <div class="g2">
+      <div class="v-card">
+        <div class="v-header">Return Rate by Product Category</div>
+        <div class="v-body"><canvas id="ecommReturnCat" height="190"></canvas></div>
+      </div>
+      <div class="v-card">
+        <div class="v-header">Demand by Product Category</div>
+        <div class="v-body"><canvas id="ecommCategory" height="190"></canvas></div>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      Demand uses order_date and includes future returns. Net Revenue ($10,549) is available in the Executive view for cross-team reconciliation.
+    </div>
+  </div>
+
+
+</div><!-- end .pbi-canvas -->
+
+<!-- ══════════════════════════ POWER BI BOTTOM TAB BAR ══════════════════════════ -->
+<div class="pbi-tabbar">
+  <div class="pbi-tab active" id="tab-exec" onclick="showTab('exec', this)">
+    <span class="tab-pip" style="background:#118DFF;"></span>Executive Summary
+  </div>
+  <div class="pbi-tab" id="tab-finance" onclick="showTab('finance', this)">
+    <span class="tab-pip" style="background:#12239E;"></span>Finance
+  </div>
+  <div class="pbi-tab" id="tab-marketing" onclick="showTab('marketing', this)">
+    <span class="tab-pip" style="background:#E66C37;"></span>Marketing
+  </div>
+  <div class="pbi-tab" id="tab-ecomm" onclick="showTab('ecomm', this)">
+    <span class="tab-pip" style="background:#217346;"></span>eCommerce
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ DATA & CHARTS ═══════════════════════════════ -->
+<script>
+const D = {
+  months:           ["Jan 2026","Feb 2026","Mar 2026","Apr 2026"],
+  monthly_gross:    [2889.86, 3194.85, 3249.84, 2009.89],
+  monthly_net:      [2699.87, 3069.86, 3169.85, 1609.90],
+  monthly_returns:  [189.99,  124.99,   79.99,  399.99],
+  pay_monthly_net:  [2469.88, 2749.86, 2659.86, 2669.88],
+  channels:         ["Direct Web","Wholesale","Amazon","B2B","Retail"],
+  chan_gross:        [2729.87, 1599.93, 1139.90, 2899.86, 2974.88],
+  chan_net:          [2139.89, 1599.93, 1059.91, 2899.86, 2849.89],
+  categories:        ["Apparel","Equipment","Footwear","Accessories"],
+  cat_gross:         [1994.85, 6069.86, 2669.85,  609.88],
+  cat_net:           [1869.86, 5669.87, 2479.86,  529.89],
+  cat_ret:           [124.99,  399.99,  189.99,   79.99],
+  mktg_sources:      ["Direct","Organic","Email","Affiliate","Paid Search"],
+  mktg_rev:          [6659.71, 1139.91, 1479.90,  789.98,  479.98],
+  mktg_orders:       [30, 12, 11, 3, 4],
+  mktg_promo:        [false, false, true, true, true],
+  // Promo-only subset: paid/owned campaigns drove the sale
+  promo_sources:     ["Email","Affiliate","Paid Search"],
+  promo_rev:         [1479.90, 789.98, 479.98],
+  promo_orders:      [11, 3, 4],
+  promo_total_net:   2749.86,
+  promo_total_orders: 18,
+  nonpromo_total_net: 7799.62,
+  nonpromo_total_orders: 42,
+  // Headline metric set used across exec/finance
+  gross_revenue:     11344.44,   // post-cancel, pre-return
+  recognized_net:    10549.48,   // post-return, on payment_date
+  timing: [
+    {id:"T1", ord:"Jan 31", pay:"Feb 2",  amt:229.99, note:"Finance books Feb · eCommerce counts Jan"},
+    {id:"T2", ord:"Feb 28", pay:"Mar 1",  amt:549.99, note:"Finance sees Mar revenue for a Feb order"},
+    {id:"T3", ord:"Mar 29", pay:"Apr 1",  amt:159.99, note:"Marketing attributes to Mar · Finance books Apr"},
+    {id:"T4", ord:"Mar 31", pay:"Apr 2",  amt:899.99, note:"Q1/Q2 boundary — $900 impacts quarterly close"},
+  ],
+  cancel_attr: [
+    {order:"ORD-2026-CAN1", ch:"Direct Web", src:"paid_search", amt:219.99},
+    {order:"ORD-2026-CAN2", ch:"B2B",        src:"email",       amt:89.99},
+    {order:"ORD-2026-CAN3", ch:"Amazon",     src:"none",        amt:449.99},
+    {order:"ORD-2026-CAN4", ch:"Direct Web", src:"affiliate",   amt:49.99},
+  ],
+};
+
+function showTab(name, el) {
+  document.querySelectorAll('.pbi-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pbi-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  el.classList.add('active');
+}
+
+function fmt(v) {
+  return '$' + Math.abs(v).toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+const PBI = {
+  blue:'#118DFF', dblue:'#12239E', orange:'#E66C37',
+  purple:'#6B007B', teal:'#0E7490', green:'#217346',
+  red:'#C00000', gray:'#605E5C'
+};
+const THEME = [PBI.blue, PBI.orange, PBI.dblue, PBI.green, PBI.purple];
+
+Chart.defaults.font.family = '"Segoe UI", -apple-system, sans-serif';
+Chart.defaults.font.size   = 11;
+Chart.defaults.color       = '#605E5C';
+Chart.defaults.plugins.legend.labels.boxWidth  = 10;
+Chart.defaults.plugins.legend.labels.padding   = 14;
+Chart.defaults.plugins.legend.labels.color     = '#605E5C';
+
+const grid = { color: '#F3F2F1', borderColor: '#E1DFDD' };
+const yTicks = { callback: v => '$' + v.toLocaleString() };
+
+// ═══ EXEC: Net Revenue trend (line — simpler, leadership-friendly) ═══
+new Chart(document.getElementById('execMonthly'), {
+  type:'line',
+  data:{
+    labels: D.months,
+    datasets:[{
+      label:'Net Revenue', data:D.monthly_net,
+      borderColor: PBI.dblue, backgroundColor: PBI.dblue+'22',
+      borderWidth: 2.5, fill: true, tension: 0.3,
+      pointRadius: 4, pointBackgroundColor: PBI.dblue
+    }]
+  },
+  options:{
+    responsive:true,
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label: ctx => ' Net: ' + fmt(ctx.raw)}}},
+    scales:{x:{grid:{display:false}}, y:{grid, ticks:yTicks, beginAtZero:true}}
+  }
+});
+
+// ═══ EXEC: Channel donut ═══
+new Chart(document.getElementById('execChannel'), {
+  type:'doughnut',
+  data:{
+    labels: D.channels,
+    datasets:[{
+      data: D.chan_net, backgroundColor: THEME,
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options:{
+    responsive:true, cutout:'55%',
+    plugins:{
+      legend:{position:'right'},
+      tooltip:{callbacks:{label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)}`}}
+    }
+  }
+});
+
+// ═══ EXEC: Cross-team table (simplified — fewer cols) ═══
+(function(){
+  const t = document.getElementById('crossTeamTable');
+  t.innerHTML = `<thead><tr>
+    <th>Month</th>
+    <th style="text-align:right;">eCommerce Demand</th>
+    <th style="text-align:right;">Finance Net</th>
+    <th style="text-align:right;">Marketing Attributed</th>
+    <th style="text-align:center;">Status</th>
+  </tr></thead><tbody>` +
+  D.months.map((m,i) => {
+    const gr = D.monthly_gross[i], nr = D.monthly_net[i];
+    const pnet = D.pay_monthly_net[i];
+    const v = ((gr-nr)/gr*100).toFixed(1);
+    const tag = parseFloat(v)<3 ? '<span class="tag t-ok">Aligned</span>'
+                                 : '<span class="tag t-warn">Returns gap</span>';
+    return `<tr>
+      <td><strong>${m}</strong></td>
+      <td style="text-align:right;">${fmt(gr)}</td>
+      <td style="text-align:right;">${fmt(pnet)}</td>
+      <td style="text-align:right;">${fmt(nr)}</td>
+      <td style="text-align:center;">${tag}</td>
+    </tr>`;
+  }).join('') +
+  `<tfoot><tr>
+    <td>YTD Total</td>
+    <td style="text-align:right;">${fmt(D.monthly_gross.reduce((a,b)=>a+b,0))}</td>
+    <td style="text-align:right;">${fmt(D.pay_monthly_net.reduce((a,b)=>a+b,0))}</td>
+    <td style="text-align:right;">${fmt(D.monthly_net.reduce((a,b)=>a+b,0))}</td>
+    <td style="text-align:center;"><span class="tag t-ok">Reconciled</span></td>
+  </tr></tfoot>`;
+})();
+
+// ═══ FINANCE: Monthly by payment date ═══
+new Chart(document.getElementById('finMonthly'), {
+  type:'bar',
+  data:{
+    labels: D.months,
+    datasets:[{
+      label:'Net Revenue (payment_date)', data:D.pay_monthly_net,
+      backgroundColor: PBI.dblue+'CC', borderColor: PBI.dblue, borderWidth:1, borderRadius:2
+    }]
+  },
+  options:{responsive:true, plugins:{legend:{display:false},
+    tooltip:{callbacks:{label: ctx => ' Net: ' + fmt(ctx.raw)}}},
+    scales:{x:{grid:{display:false}}, y:{grid, ticks:yTicks}}}
+});
+
+// ═══ FINANCE: Category bar ═══
+new Chart(document.getElementById('finCategory'), {
+  type:'bar',
+  data:{
+    labels: D.categories,
+    datasets:[{
+      label:'Net Revenue', data: D.cat_net,
+      backgroundColor: PBI.dblue+'CC', borderColor: PBI.dblue, borderWidth:1, borderRadius:2
+    }]
+  },
+  options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false},
+    tooltip:{callbacks:{label: ctx => ' ' + fmt(ctx.raw)}}},
+    scales:{x:{grid, ticks:yTicks}, y:{grid:{display:false}}}}
+});
+
+// ═══ FINANCE: Period-boundary table ═══
+(function(){
+  const t = document.getElementById('timingTable');
+  t.innerHTML = `<thead><tr>
+    <th>ID</th><th>Order Date</th><th>Payment Date</th>
+    <th style="text-align:right;">Revenue</th><th>Cross-team Impact</th>
+  </tr></thead><tbody>` +
+  D.timing.map(r=>`<tr>
+    <td><span class="tag t-purple">${r.id}</span></td>
+    <td>${r.ord}</td><td>${r.pay}</td>
+    <td style="text-align:right;"><strong>${fmt(r.amt)}</strong></td>
+    <td style="font-size:11px;">${r.note}</td>
+  </tr>`).join('') +
+  `<tfoot><tr>
+    <td colspan="3">Total period-boundary revenue</td>
+    <td style="text-align:right;">${fmt(D.timing.reduce((a,b)=>a+b.amt,0))}</td>
+    <td>Both dates exposed in fact table</td>
+  </tr></tfoot>`;
+})();
+
+// ═══ MARKETING: Promo vs Non-Promo split ═══
+new Chart(document.getElementById('mktgPromoSplit'), {
+  type:'doughnut',
+  data:{
+    labels: ['Promo-Attributed','Direct + Organic'],
+    datasets:[{
+      data:[D.promo_total_net, D.nonpromo_total_net],
+      backgroundColor:[PBI.purple, PBI.teal],
+      borderWidth:2, borderColor:'#fff'
+    }]
+  },
+  options:{responsive:true, cutout:'55%',
+    plugins:{legend:{position:'right'},
+      tooltip:{callbacks:{label: ctx => ` ${ctx.label}: ${fmt(ctx.raw)}`}}}}
+});
+
+// ═══ MARKETING: Source revenue (promo highlighted) ═══
+new Chart(document.getElementById('mktgSource'), {
+  type:'bar',
+  data:{
+    labels: D.mktg_sources,
+    datasets:[{
+      label:'Net Revenue', data:D.mktg_rev,
+      backgroundColor: D.mktg_promo.map(p => p ? PBI.purple+'CC' : PBI.teal+'77'),
+      borderColor:    D.mktg_promo.map(p => p ? PBI.purple   : PBI.teal),
+      borderWidth:1, borderRadius:2
+    }]
+  },
+  options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false},
+    tooltip:{callbacks:{label: ctx => ` ${D.mktg_promo[ctx.dataIndex] ? 'Promo' : 'Non-Promo'}: ${fmt(ctx.raw)}`}}},
+    scales:{x:{grid, ticks:yTicks}, y:{grid:{display:false}}}}
+});
+
+// ═══ MARKETING: Source breakdown table ═══
+(function(){
+  const t = document.getElementById('mktgSourceTable');
+  const total = D.recognized_net;
+  const rows = D.mktg_sources.map((s,i) => ({
+    src: s, promo: D.mktg_promo[i],
+    orders: D.mktg_orders[i], net: D.mktg_rev[i],
+    pct: D.mktg_rev[i]/total
+  })).sort((a,b) => (b.promo - a.promo) || (b.net - a.net));
+
+  t.innerHTML = `<thead><tr>
+    <th>Source</th><th style="text-align:center;">Type</th>
+    <th style="text-align:right;">Orders</th>
+    <th style="text-align:right;">Net Revenue</th>
+    <th style="text-align:right;">% of Recognized</th>
+  </tr></thead><tbody>` +
+  rows.map(r => `<tr>
+    <td><strong>${r.src}</strong></td>
+    <td style="text-align:center;"><span class="tag ${r.promo?'t-purple':'t-blue'}">${r.promo?'Promo':'Non-Promo'}</span></td>
+    <td style="text-align:right;">${r.orders}</td>
+    <td style="text-align:right;"><strong>${fmt(r.net)}</strong></td>
+    <td style="text-align:right;">${(r.pct*100).toFixed(1)}%</td>
+  </tr>`).join('') +
+  `<tfoot>
+    <tr style="background:#F5F0FF;">
+      <td><strong>Promo Total</strong></td>
+      <td style="text-align:center;"><span class="tag t-purple">Promo</span></td>
+      <td style="text-align:right;"><strong>${D.promo_total_orders}</strong></td>
+      <td style="text-align:right;color:var(--pbi-purple);"><strong>${fmt(D.promo_total_net)}</strong></td>
+      <td style="text-align:right;color:var(--pbi-purple);"><strong>${(D.promo_total_net/total*100).toFixed(1)}%</strong></td>
+    </tr>
+    <tr style="background:#EFF6FF;">
+      <td><strong>Non-Promo Total</strong></td>
+      <td style="text-align:center;"><span class="tag t-blue">Non-Promo</span></td>
+      <td style="text-align:right;"><strong>${D.nonpromo_total_orders}</strong></td>
+      <td style="text-align:right;color:var(--pbi-teal);"><strong>${fmt(D.nonpromo_total_net)}</strong></td>
+      <td style="text-align:right;color:var(--pbi-teal);"><strong>${(D.nonpromo_total_net/total*100).toFixed(1)}%</strong></td>
+    </tr>
+    <tr>
+      <td><strong>GRAND TOTAL</strong></td>
+      <td style="text-align:center;">—</td>
+      <td style="text-align:right;"><strong>${D.promo_total_orders + D.nonpromo_total_orders}</strong></td>
+      <td style="text-align:right;"><strong>${fmt(total)}</strong></td>
+      <td style="text-align:right;"><strong>100.0%</strong></td>
+    </tr>
+  </tfoot>`;
+})();
+
+// ═══ MARKETING: Cancel attribution table ═══
+(function(){
+  const t = document.getElementById('cancelAttrTable');
+  t.innerHTML = `<thead><tr>
+    <th>Order ID</th><th>Channel</th><th>Source</th>
+    <th style="text-align:right;">Raw Revenue</th>
+    <th style="text-align:right;">Governed Revenue</th>
+  </tr></thead><tbody>` +
+  D.cancel_attr.map(r=>`<tr>
+    <td><code style="font-size:10px;">${r.order}</code></td>
+    <td>${r.ch}</td>
+    <td><span class="tag t-warn">${r.src}</span></td>
+    <td style="text-align:right;" class="neg"><strong>${fmt(r.amt)}</strong></td>
+    <td style="text-align:right;" class="pos"><strong>$0.00</strong></td>
+  </tr>`).join('') +
+  `<tfoot><tr>
+    <td colspan="3">Total removed from attribution</td>
+    <td style="text-align:right;" class="neg">${fmt(D.cancel_attr.reduce((a,b)=>a+b.amt,0))}</td>
+    <td style="text-align:right;" class="pos">$0.00</td>
+  </tr></tfoot>`;
+})();
+
+// ═══ eCOMM: Monthly demand ═══
+new Chart(document.getElementById('ecommMonthly'), {
+  type:'bar',
+  data:{
+    labels: D.months,
+    datasets:[{
+      label:'Gross Demand', data:D.monthly_gross,
+      backgroundColor: PBI.green+'CC', borderColor: PBI.green, borderWidth:1, borderRadius:2
+    }]
+  },
+  options:{responsive:true, plugins:{legend:{display:false},
+    tooltip:{callbacks:{label: ctx => ' Demand: ' + fmt(ctx.raw)}}},
+    scales:{x:{grid:{display:false}}, y:{grid, ticks:yTicks}}}
+});
+
+// ═══ eCOMM: Channel demand ═══
+new Chart(document.getElementById('ecommChannel'), {
+  type:'bar',
+  data:{
+    labels: D.channels,
+    datasets:[{
+      label:'Demand', data:D.chan_gross,
+      backgroundColor: PBI.green+'CC', borderColor: PBI.green, borderWidth:1, borderRadius:2
+    }]
+  },
+  options:{responsive:true, plugins:{legend:{display:false},
+    tooltip:{callbacks:{label: ctx => ' ' + fmt(ctx.raw)}}},
+    scales:{x:{grid:{display:false}}, y:{grid, ticks:yTicks}}}
+});
+
+// ═══ eCOMM: Return rate by category ═══
+new Chart(document.getElementById('ecommReturnCat'), {
+  type:'bar',
+  data:{
+    labels: D.categories,
+    datasets:[{
+      label:'Return Rate %',
+      data: D.categories.map((_,i) => +(D.cat_ret[i]/D.cat_gross[i]*100).toFixed(1)),
+      backgroundColor: PBI.orange+'CC', borderColor: PBI.orange, borderWidth:1, borderRadius:2
+    }]
+  },
+  options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false}},
+    scales:{x:{grid, ticks:{callback:v=>v+'%'}}, y:{grid:{display:false}}}}
+});
+
+// ═══ eCOMM: Category demand ═══
+new Chart(document.getElementById('ecommCategory'), {
+  type:'bar',
+  data:{
+    labels: D.categories,
+    datasets:[{
+      label:'Demand', data:D.cat_gross,
+      backgroundColor: PBI.teal+'CC', borderColor: PBI.teal, borderWidth:1, borderRadius:2
+    }]
+  },
+  options:{indexAxis:'y', responsive:true, plugins:{legend:{display:false},
+    tooltip:{callbacks:{label: ctx => ' ' + fmt(ctx.raw)}}},
+    scales:{x:{grid, ticks:yTicks}, y:{grid:{display:false}}}}
+});
+
+</script>
+</body>
+</html>

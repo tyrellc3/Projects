@@ -1,0 +1,18 @@
+,eCommerce Team  -  Gross Demand Revenue Dashboard  -  Jan-Apr 2026,,,,,,
+,Gross demand on order_date  -  All orders including returns/cancels at time of order  -  Source: fct_orders,,,,,,
+,Gross Demand Revenue,,Total Orders,,Blended AOV,,
+,"$11,344.44",,60,,$189.07,,
+,DEMAND REVENUE BY CHANNEL  (order_date basis),,,,,,
+,Channel,Orders,Gross Demand,Net Revenue,Return Cnt,Cancel Cnt,AOV
+,Retail,12,2974.88,2849.89,1,0,247.91
+,B2B,14,2899.86,2899.86,0,0,207.13
+,Direct Web,16,2729.87,2139.89,2,3,170.62
+,Wholesale,7,1599.93,1599.93,0,0,228.56
+,Amazon,11,1139.90,1059.91,1,1,103.63
+,TOTAL,60,11344.44,10549.48,4,4,189.07
+,MONTHLY ORDER VOLUME  (order_date basis),,,,,,
+,Month,Orders,Gross Demand,AOV,,,
+,Jan 2026,14,2889.86,206.42,,,
+,Feb 2026,15,3194.85,212.99,,,
+,Mar 2026,16,3249.84,203.11,,,
+,Apr 2026,11,2009.89,182.72,,,

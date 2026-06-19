@@ -1,0 +1,19 @@
+name: ecommerce_revenue_case_study
+version: '1.0'
+config-version: 2
+profile: ecommerce_revenue_case_study
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+model-paths: ["models"]
+
+models:
+  ecommerce_revenue_case_study:
+    ecommerce:
+      staging:
+        +materialized: table
+      core:
+        +materialized: table
+      marts:
+        +materialized: table
