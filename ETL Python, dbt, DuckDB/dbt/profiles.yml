@@ -1,0 +1,8 @@
+portfolio:
+  outputs:
+    dev:
+      type: duckdb
+      path: "/Users/tyrellclark/GitHub/Projects/ETL Python, dbt, DuckDB/data/analytics.duckdb"
+      threads: 1
+      extensions: []
+  target: dev

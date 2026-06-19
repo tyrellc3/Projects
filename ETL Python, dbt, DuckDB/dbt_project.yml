@@ -1,0 +1,9 @@
+name: portfolio
+version: '1.0'
+config-version: 2
+profile: portfolio
+analysis-paths: ["analysis"]
+test-paths: ["tests"]
+seed-paths: ["data"]
+macro-paths: ["macros"]
+model-paths: ["models"]

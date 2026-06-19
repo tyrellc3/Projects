@@ -1,0 +1,42 @@
+version: 2
+
+sources:
+  - name: openflights
+    schema: raw
+    tables:
+      - name: airports
+      - name: airlines
+      - name: routes
+
+models:
+  - name: stg_airports
+    description: "Standardized airport metadata for analysis."
+    columns:
+      - name: airport_id
+        tests: [not_null, unique]
+      - name: name
+        tests: [not_null]
+  - name: stg_airlines
+    description: "Standardized airline metadata and operational status."
+    columns:
+      - name: airline_id
+        tests: [not_null, unique]
+      - name: name
+        tests: [not_null]
+  - name: stg_routes
+    description: "Standardized route inventory linking source and destination airports."
+    columns:
+      - name: airline
+        tests: [not_null]
+      - name: source_airport
+        tests: [not_null]
+      - name: destination_airport
+        tests: [not_null]
+  - name: mart_top_countries_by_airports
+    description: "Top countries ranked by airport count."
+  - name: mart_top_airlines_by_routes
+    description: "Top airlines ranked by route count."
+  - name: mart_airport_connectivity
+    description: "Aggregated route departures and arrivals by airport."
+  - name: mart_top_hub_airports
+    description: "Highest-traffic airports by combined departure and arrival counts."
