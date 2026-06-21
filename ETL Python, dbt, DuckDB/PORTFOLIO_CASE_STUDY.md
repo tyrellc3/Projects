@@ -1,9 +1,5 @@
 # OpenFlights Case Study
 
-## Project Summary
-
-I built this project to turn raw OpenFlights airport, airline, and route files into a small analytics warehouse that can answer practical network questions. The workflow uses Python for ingestion, DuckDB for local analytics storage, dbt for modeling and tests, and notebooks/dashboard outputs for analysis.
-
 ## Business Context
 
 The raw OpenFlights data is useful, but it is not analysis-ready. Airport, airline, and route files need to be standardized and joined before they can answer questions about market coverage, hub concentration, route mix, and carrier reach.
@@ -89,12 +85,3 @@ If I had to choose one near-term focus area from this dataset, I would start wit
 ## Caveats
 
 OpenFlights is route inventory data, not booking, revenue, passenger demand, or schedule frequency data. I would not use it alone to make final commercial decisions. I would use this project as the modeled network layer, then join in demand, fare, capacity, reliability, and profitability data before making production recommendations.
-
-## Portfolio Highlights
-
-- `scripts/ingest_openflights.py` loads raw source files into DuckDB.
-- `models/openflights/` contains staging models and analytics marts.
-- `models/openflights/schema.yml` documents models and tests.
-- `notebooks/` includes interactive Plotly analysis with static GitHub fallbacks.
-- `scripts/export_dashboard.py` exports an interactive HTML dashboard.
-- `scripts/export_github_charts.py` exports static Plotly images for notebook previews.

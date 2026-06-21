@@ -22,7 +22,7 @@ Create a governed North American ecommerce revenue model that allows Finance, Ma
 
 ## Functional Requirements
 
-- Ingest order-level source data from the ecommerce order system.
+- Ingest order-level source-like data that represents ecommerce order-system behavior.
 - Keep the most recent `inserted_at` record for duplicate `order_id` values.
 - Preserve `order_date`, `payment_date`, and `return_date` for separate reporting calendars.
 - Set cancelled order revenue to zero in governed revenue metrics.
@@ -52,6 +52,5 @@ Create a governed North American ecommerce revenue model that allows Finance, Ma
 
 ## Known Constraints
 
-- The sample data is intentionally small and synthetic.
 - The current dbt project runs locally in DuckDB and is designed for portfolio demonstration.
-- The dashboard asset in `assets/` is a redacted artifact from the presentation workflow; the reproducible dashboard is generated from dbt marts with `scripts/export_dashboard.py`.
+- The dashboard asset in `assets/` is included for project context; the dashboard is generated from dbt marts with `scripts/export_dashboard.py`.

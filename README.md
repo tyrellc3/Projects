@@ -12,7 +12,7 @@ Tools used: Python, DuckDB, dbt, Jupyter, Plotly.
 
 ### North American Ecommerce Case Study
 
-This is a redacted analytics engineering case study focused on Ecommerce revenue alignment. I structured the project around a practical business problem: Finance, Marketing, and Ecommerce reporting different revenue numbers because of metric definitions, timing differences, duplicate orders, returns, attribution rules, and pipeline reliability gaps. The project includes expanded raw CSV sources, DuckDB ingestion, dbt staging/core/mart models, tests, a notebook dashboard, and documentation for requirements, metric definitions, and implementation strategy.
+This is a redacted analytics engineering case study focused on Ecommerce revenue alignment. I structured the project around a practical business problem: Finance, Marketing, and Ecommerce reporting different revenue numbers because of metric definitions, timing differences, duplicate orders, returns, attribution rules, and pipeline reliability gaps. The project includes DuckDB ingestion, dbt staging/core/mart models, tests, a notebook dashboard, and documentation for requirements, metric definitions, and implementation strategy.
 
 Tools and concepts used: dbt, DuckDB, Python, SQL/data modeling, revenue reconciliation, metric governance, BI stakeholder views.
 

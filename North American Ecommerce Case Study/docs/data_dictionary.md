@@ -2,7 +2,7 @@
 
 ## `data/raw/orders.csv`
 
-Raw order-level extract used as the source input for the case study.
+Order-level table used for the case study.
 
 | Column | Description |
 | --- | --- |
@@ -10,16 +10,16 @@ Raw order-level extract used as the source input for the case study.
 | `inserted_at` | Load timestamp used to resolve duplicate order records. |
 | `order_date` | Date the order was placed. |
 | `payment_date` | Date the order settled or was paid. |
-| `customer_id` | Redacted customer identifier. |
+| `customer_id` | Customer identifier. |
 | `channel` | Sales channel, such as Direct Web, Retail, B2B, Wholesale, or marketplace. |
 | `product_category` | Product grouping used for ecommerce reporting. |
-| `product_sku` | Redacted product SKU. |
+| `product_sku` | Product SKU. |
 | `gross_revenue` | Source gross revenue before governed cleanup. |
-| `return_flag` | Source return indicator. May be inconsistent in raw data. |
-| `return_amount` | Source return amount. May have incorrect sign or missing value. |
+| `return_flag` | Source-like return indicator. May be inconsistent in raw data. |
+| `return_amount` | Source-like return amount. May have incorrect sign or missing value. |
 | `return_date` | Date the return was processed. |
-| `order_status` | Source order status. |
-| `marketing_source` | Source marketing attribution value. |
+| `order_status` | Source-like order status. |
+| `marketing_source` | Source-like marketing attribution value. |
 | `data_issue` | Embedded issue label used for case-study diagnostics. |
 
 ## Additional Raw Sources
@@ -29,7 +29,7 @@ Raw order-level extract used as the source input for the case study.
 | `order_lines.csv` | one row per raw order line | Product-level order detail for building line facts. |
 | `payments.csv` | one row per raw order payment | Payment timing, payment status, and method. |
 | `returns.csv` | one row per raw return event | Return timing, amount, reason, and status. |
-| `customers.csv` | one row per customer | Redacted customer attributes and acquisition source. |
+| `customers.csv` | one row per customer | Customer attributes and acquisition source. |
 | `products.csv` | one row per product SKU | Product category, product name, and list price. |
 | `channels.csv` | one row per channel | Channel names and channel groupings. |
 | `campaigns.csv` | one row per generated campaign | Promo-attributed campaign metadata. |
@@ -51,7 +51,7 @@ Raw order-level extract used as the source input for the case study.
 
 ## `data/reference/fct_orders_modeled.csv`
 
-Reference output representing the governed order fact from the original analysis. This should be treated as a rebuild target, not as raw source data.
+Reference output representing the governed order fact for this case-study build. This should be treated as a rebuild target, not as raw source data.
 
 Key concepts:
 
@@ -64,11 +64,11 @@ Key concepts:
 
 ## `data/reference/revenue_reconciliation_bridge.csv`
 
-Bridge from raw extracted revenue to governed net revenue. It explains how duplicate removal, return correction, cancellation handling, and pipeline exclusions move the business from raw gross revenue to a trusted reporting number.
+Bridge from raw revenue to governed net revenue. It explains how duplicate removal, return correction, cancellation handling, and pipeline exclusions move the business from raw gross revenue to a trusted reporting number.
 
 ## Audience View Extracts
 
-The following files are redacted presentation extracts:
+The following files are reference stakeholder extracts created for the portfolio case study:
 
 - `finance_view_extract.csv`
 - `marketing_view_extract.csv`

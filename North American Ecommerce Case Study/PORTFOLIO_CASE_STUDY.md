@@ -1,11 +1,5 @@
 # North American Ecommerce Revenue Case Study
 
-## Project Summary
-
-I built this project as a redacted analytics engineering case study for a North American ecommerce revenue problem. The business issue was not simply that teams had different dashboards. Finance, Marketing, and Ecommerce were using related data to answer different questions, but the definitions and data rules were not governed tightly enough.
-
-The result is a working dbt project that takes raw ecommerce CSVs through staging, dimensions, facts, and marts in DuckDB.
-
 ## Business Problem
 
 Three teams need revenue reporting, but each team needs a different lens:
@@ -18,7 +12,7 @@ The risk is that every team can be directionally right and still create confusio
 
 ## Raw Data Issues
 
-The source data intentionally includes the kinds of issues that create revenue disagreement:
+The case study centers on the kinds of issues that create revenue disagreement:
 
 - duplicate retry loads
 - cancelled orders with revenue still attached
@@ -28,12 +22,11 @@ The source data intentionally includes the kinds of issues that create revenue d
 
 ## Analytics Engineering Approach
 
-1. Expanded the raw dataset into source-like tables for orders, order lines, payments, returns, customers, products, channels, campaigns, and dates.
-2. Loaded the raw CSVs into DuckDB under a `raw` schema.
-3. Built dbt staging models to normalize data types and classify source issues.
-4. Built dimensions and fact tables around a governed order grain.
-5. Built marts for reconciliation, Finance, Marketing, Ecommerce, KPIs, and data quality.
-6. Added dbt tests for uniqueness, relationships, cancellation handling, return deductions, and pipeline exclusions.
+1. Loaded source-like ecommerce data into DuckDB under a `raw` schema.
+2. Built dbt staging models to normalize data types and classify source issues.
+3. Built dimensions and fact tables around a governed order grain.
+4. Built marts for reconciliation, Finance, Marketing, Ecommerce, KPIs, and data quality.
+5. Added dbt tests for uniqueness, relationships, cancellation handling, return deductions, and pipeline exclusions.
 
 ## Practical Questions Answered
 
@@ -52,7 +45,7 @@ The dbt reconciliation mart breaks the gap into explainable drivers:
 - cancelled order revenue zeroed: `-$809.96`
 - returns deducted and corrected: `-$794.96`
 
-This creates a traceable bridge from raw extracted orders to governed net revenue.
+This creates a traceable bridge from raw order revenue to governed net revenue.
 
 ### 3. What should Finance use?
 
@@ -83,4 +76,4 @@ The first production milestone should be Finance-aligned net revenue with a reco
 
 ## Caveats
 
-This is a redacted case study using a small synthetic dataset. The modeling pattern is the point: clear ownership, deterministic transformations, documented metric definitions, and testable revenue rules.
+This is a redacted case study using a small mock dataset. The modeling pattern is the point: clear ownership, deterministic transformations, documented metric definitions, and testable revenue rules.

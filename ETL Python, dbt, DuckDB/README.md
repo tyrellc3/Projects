@@ -1,91 +1,73 @@
 # OpenFlights Analytics
 
-This project cleans OpenFlights data, builds dbt analytics models, and produces reports with DuckDB and Python.
+This project builds a local analytics workflow around OpenFlights airport, airline, and route data. It uses Python to ingest raw CSVs into DuckDB, dbt to standardize and model the data, and notebooks/dashboard exports to answer route network questions.
 
-## Overview
+The project focuses on practical data engineering patterns: clean source ingestion, tested transformations, reusable marts, documented models, and visuals that work both locally and in GitHub.
 
-I use OpenFlights airport, airline, and route data to demonstrate end-to-end analytics engineering.
-
-## Setup
+## How to Run
 
 ```bash
 ./setup.sh
 source venv/bin/activate
 export DBT_PROFILES_DIR="$PWD/dbt"
-```
 
-## Ingestion
-
-1. Put the OpenFlights raw CSVs into `data/raw/`.
-2. Run:
-
-```bash
 python scripts/ingest_openflights.py
-```
-
-## dbt workflow
-
-```bash
-dbt debug
 dbt run
 dbt test
-dbt docs generate
 ```
 
-## Models
-
-- `stg_airports`: airport metadata cleanup
-- `stg_airlines`: airline metadata cleanup
-- `stg_routes`: route inventory standardization
-- `mart_top_countries_by_airports`: country airport ranking
-- `mart_top_airlines_by_routes`: airline route ranking
-- `mart_airport_connectivity`: airport departures and arrivals
-- `mart_top_hub_airports`: busiest airports by route activity
-- `mart_top_country_pairs`: country-to-country route flows
-- `mart_route_network_summary`: domestic versus international route mix
-- `mart_country_route_mix`: country-level outbound route mix
-- `mart_hub_country_dependency`: hub concentration by country
-- `mart_airline_route_coverage`: airline route coverage with carrier names
-
-## Analytics
-
-- `notebooks/01_openflights_eda.ipynb`: overview metrics and visuals
-- `notebooks/02_openflights_deeper_analysis.ipynb`: route flows and geographic hub analysis
-
-## Dashboard
+To export dashboard and documentation assets:
 
 ```bash
 python scripts/export_dashboard.py
+bash scripts/generate_dbt_docs.sh
 ```
 
-Then open `reports/openflights_dashboard.html`.
-
-## Notebook chart rendering
-
-GitHub does not reliably render interactive Plotly charts inside notebooks. The notebooks keep the interactive Plotly charts for local use and include static SVG fallback versions exported from Plotly with Kaleido:
+To refresh GitHub-renderable notebook charts:
 
 ```bash
 python scripts/export_github_charts.py
 ```
 
-The static notebook charts are saved in `assets/openflights/`.
+## File Dictionary
 
-## Documentation
+| Path | Purpose |
+| --- | --- |
+| `data/raw/airports.csv` | Raw OpenFlights airport reference data. |
+| `data/raw/airlines.csv` | Raw OpenFlights airline reference data. |
+| `data/raw/routes.csv` | Raw OpenFlights route inventory data. |
+| `models/openflights/stg_airports.sql` | Cleans and standardizes airport metadata. |
+| `models/openflights/stg_airlines.sql` | Cleans and standardizes airline metadata. |
+| `models/openflights/stg_routes.sql` | Standardizes route inventory and airport relationships. |
+| `models/openflights/mart_top_countries_by_airports.sql` | Ranks countries by airport count. |
+| `models/openflights/mart_top_airlines_by_routes.sql` | Ranks airlines by route count. |
+| `models/openflights/mart_airport_connectivity.sql` | Calculates airport departures, arrivals, and total route activity. |
+| `models/openflights/mart_top_hub_airports.sql` | Identifies the busiest hub airports by route activity. |
+| `models/openflights/mart_top_country_pairs.sql` | Models country-to-country route flows. |
+| `models/openflights/mart_route_network_summary.sql` | Summarizes domestic versus international route mix. |
+| `models/openflights/mart_country_route_mix.sql` | Calculates country-level outbound route mix. |
+| `models/openflights/mart_hub_country_dependency.sql` | Measures how concentrated each country is around top hubs. |
+| `models/openflights/mart_airline_route_coverage.sql` | Combines carrier names with route coverage metrics. |
+| `models/openflights/schema.yml` | dbt source/model documentation and tests. |
+| `notebooks/01_openflights_eda.ipynb` | Notebook for overview metrics and initial visuals. |
+| `notebooks/02_openflights_deeper_analysis.ipynb` | Notebook for route flows, hub concentration, and network recommendations. |
+| `assets/openflights/` | Static SVG chart exports used when notebooks are viewed in GitHub. |
+| `scripts/ingest_openflights.py` | Loads raw OpenFlights CSVs into DuckDB. |
+| `scripts/export_dashboard.py` | Exports an interactive HTML dashboard from modeled data. |
+| `scripts/export_github_charts.py` | Exports static Plotly chart images for GitHub notebook rendering. |
+| `scripts/generate_dbt_docs.sh` | Generates dbt documentation. |
+| `scripts/serve_dbt_docs.sh` | Serves dbt documentation locally. |
+| `PROJECT_SUMMARY.md` | Executive snapshot of outputs and findings. |
+| `PORTFOLIO_CASE_STUDY.md` | Narrative case study with practical questions, findings, and recommendation. |
 
-```bash
-bash scripts/generate_dbt_docs.sh
-bash scripts/serve_dbt_docs.sh
-```
+## Key Outputs
 
-## Portfolio case study
+- Cleaned airport, airline, and route staging models.
+- Route network marts for connectivity, route mix, hub concentration, country pairs, and airline coverage.
+- dbt tests and documentation for the modeled layer.
+- Interactive notebooks with static Plotly fallbacks for GitHub.
+- Exportable HTML dashboard for local review.
 
-See `PORTFOLIO_CASE_STUDY.md` for the project story, impact, and talking points.
+## Notes
 
-## Files to ignore
-
-The repo excludes files that are not useful for portfolio review:
-- `venv/` for the local Python environment
-- `target/` for dbt compiled artifacts
-- `logs/` for runtime logs such as `dbt.log`
-- `data/*.duckdb` for local DuckDB database files
-- `reports/` for generated dashboard output
+GitHub does not reliably render interactive Plotly charts inside notebooks. The notebooks keep the interactive charts for local use and include static SVG fallbacks exported from the same Plotly figures.
